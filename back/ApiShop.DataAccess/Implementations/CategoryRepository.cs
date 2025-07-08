@@ -1,45 +1,55 @@
-using ApiShop.Common.DTO;
+using ApiShop.Common.DAO;
 using ApiShop.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiShop.DataAccess.Implementations
 {
     public class CategoryRepository : ICategoryRepository
     {
-        private readonly List<CategoryDto> _categories = new();
+        private readonly ApiShopDbContext _context;
 
-        public Task<CategoryDto?> GetByIdAsync(Guid id) =>
-            Task.FromResult(_categories.FirstOrDefault(c => c.Id == id));
-
-        public Task<IEnumerable<CategoryDto>> GetAllAsync() =>
-            Task.FromResult<IEnumerable<CategoryDto>>(_categories);
-
-        public Task<IEnumerable<CategoryDto>> GetByParentIdAsync(Guid? parentId) =>
-            Task.FromResult<IEnumerable<CategoryDto>>(_categories.Where(c => c.ParentCategoryId == parentId));
-
-        public Task AddAsync(CategoryDto category)
+        public CategoryRepository(ApiShopDbContext context)
         {
-            _categories.Add(category);
-            return Task.CompletedTask;
+            _context = context;
         }
 
-        public Task UpdateAsync(CategoryDto category)
+        public async Task AddAsync(CategoryDao category, CancellationToken cancellationToken = default)
         {
-            var existing = _categories.FirstOrDefault(c => c.Id == category.Id);
-            if (existing != null)
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var category = await _context.Categories.FindAsync(new object[] { id }, cancellationToken);
+            if (category is not null)
             {
-                _categories.Remove(existing);
-                _categories.Add(category);
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync(cancellationToken);
             }
-            return Task.CompletedTask;
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task<IEnumerable<CategoryDao>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var category = _categories.FirstOrDefault(c => c.Id == id);
-            if (category != null)
-                _categories.Remove(category);
+            return await _context.Categories.ToListAsync(cancellationToken);
+        }
 
-            return Task.CompletedTask;
+        public async Task<CategoryDao?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Categories.FindAsync(new object[] { id }, cancellationToken);
+        }
+
+        public async Task<IEnumerable<CategoryDao>> GetByParentIdAsync(Guid? parentId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Categories
+                .Where(c => c.ParentCategoryId == parentId)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task UpdateAsync(CategoryDao category, CancellationToken cancellationToken = default)
+        {
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

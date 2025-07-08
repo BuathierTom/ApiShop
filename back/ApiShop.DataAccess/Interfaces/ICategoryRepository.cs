@@ -1,14 +1,14 @@
-using ApiShop.Common.DTO;
+using ApiShop.Common.DAO;
 
 namespace ApiShop.DataAccess.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<CategoryDto?> GetByIdAsync(Guid id);
-        Task<IEnumerable<CategoryDto>> GetAllAsync();
-        Task<IEnumerable<CategoryDto>> GetByParentIdAsync(Guid? parentId);
-        Task AddAsync(CategoryDto category);
-        Task UpdateAsync(CategoryDto category);
-        Task DeleteAsync(Guid id);
+        Task<CategoryDao?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<IEnumerable<CategoryDao>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<IEnumerable<CategoryDao>> GetByParentIdAsync(Guid? parentId, CancellationToken cancellationToken = default);
+        Task AddAsync(CategoryDao category, CancellationToken cancellationToken = default);
+        Task UpdateAsync(CategoryDao category, CancellationToken cancellationToken = default);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

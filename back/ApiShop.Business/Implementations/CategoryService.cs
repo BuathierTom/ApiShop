@@ -1,4 +1,5 @@
 using ApiShop.Business.Interfaces;
+using ApiShop.Common.DAO;
 using ApiShop.Common.DTO;
 using ApiShop.DataAccess.Interfaces;
 
@@ -13,26 +14,50 @@ namespace ApiShop.Business.Implementations
             _repository = repository;
         }
 
-        public Task<CategoryDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-            _repository.GetByIdAsync(id);
+        public async Task<CategoryDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var dao = await _repository.GetByIdAsync(id, cancellationToken);
+            return dao?.ToDto();
+        }
 
-        public Task<IEnumerable<CategoryDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
-            _repository.GetAllAsync();
+        public async Task<IEnumerable<CategoryDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            var daos = await _repository.GetAllAsync(cancellationToken);
+            return daos.Select(c => c.ToDto());
+        }
 
-        public Task<IEnumerable<CategoryDto>> GetByParentIdAsync(Guid? parentId, CancellationToken cancellationToken = default) =>
-            _repository.GetByParentIdAsync(parentId);
+        public async Task<IEnumerable<CategoryDto>> GetByParentIdAsync(Guid? parentId, CancellationToken cancellationToken = default)
+        {
+            var daos = await _repository.GetByParentIdAsync(parentId, cancellationToken);
+            return daos.Select(c => c.ToDto());
+        }
 
         public async Task<CategoryDto> CreateAsync(CategoryDto dto, CancellationToken cancellationToken = default)
         {
-            dto.Id = Guid.NewGuid();
-            await _repository.AddAsync(dto);
-            return dto;
+            var dao = new CategoryDao
+            {
+                Id = Guid.NewGuid(),
+                Name = dto.Name,
+                ParentCategoryId = dto.ParentCategoryId
+            };
+
+            await _repository.AddAsync(dao, cancellationToken);
+            return dao.ToDto();
         }
 
-        public Task UpdateAsync(CategoryDto dto, CancellationToken cancellationToken = default) =>
-            _repository.UpdateAsync(dto);
+        public async Task UpdateAsync(CategoryDto dto, CancellationToken cancellationToken = default)
+        {
+            var dao = new CategoryDao
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                ParentCategoryId = dto.ParentCategoryId
+            };
 
-        public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default) =>
-            _repository.DeleteAsync(id);
+            await _repository.UpdateAsync(dao, cancellationToken);
+        }
+
+        public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+            => _repository.DeleteAsync(id, cancellationToken);
     }
 }
