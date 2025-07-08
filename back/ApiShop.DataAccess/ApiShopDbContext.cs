@@ -1,3 +1,4 @@
+using ApiShop.Common.DAO;
 using ApiShop.Common.DTO;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,7 @@ namespace ApiShop.DataAccess
         public ApiShopDbContext(DbContextOptions<ApiShopDbContext> options)
             : base(options) {}
 
-        public DbSet<UserDto> Users { get; set; }
+        public DbSet<UserDao> Users { get; set; }
         public DbSet<ProductDto> Products { get; set; }
         public DbSet<CategoryDto> Categories { get; set; }
         public DbSet<CartItemDto> CartItems { get; set; }

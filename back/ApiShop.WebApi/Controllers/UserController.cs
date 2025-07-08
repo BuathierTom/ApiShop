@@ -40,16 +40,7 @@ namespace ApiShop.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDto>> Create([FromBody] UserCreateRequest request, CancellationToken cancellationToken)
         {
-            var dto = new UserDto
-            {
-                Id = Guid.NewGuid(),
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Role = request.Role
-            };
-
-            var created = await _service.CreateAsync(dto, cancellationToken);
+            var created = await _service.CreateAsync(request, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
         
