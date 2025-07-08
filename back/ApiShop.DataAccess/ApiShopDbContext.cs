@@ -10,7 +10,7 @@ namespace ApiShop.DataAccess
             : base(options) {}
 
         public DbSet<UserDao> Users { get; set; }
-        public DbSet<ProductDto> Products { get; set; }
+        public DbSet<ProductDao> Products { get; set; }
         public DbSet<CategoryDto> Categories { get; set; }
         public DbSet<CartItemDto> CartItems { get; set; }
         public DbSet<OrderDto> Orders { get; set; }

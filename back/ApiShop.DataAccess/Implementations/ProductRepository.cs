@@ -1,45 +1,55 @@
-using ApiShop.Common.DTO;
+using ApiShop.Common.DAO;
 using ApiShop.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiShop.DataAccess.Implementations
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly List<ProductDto> _products = new(); // temporaire
+        private readonly ApiShopDbContext _context;
 
-        public Task<ProductDto?> GetByIdAsync(Guid id) =>
-            Task.FromResult(_products.FirstOrDefault(p => p.Id == id));
-
-        public Task<IEnumerable<ProductDto>> GetAllAsync() =>
-            Task.FromResult<IEnumerable<ProductDto>>(_products);
-
-        public Task<IEnumerable<ProductDto>> GetByCategoryIdAsync(Guid categoryId) =>
-            Task.FromResult<IEnumerable<ProductDto>>(_products.Where(p => p.CategoryId == categoryId));
-
-        public Task AddAsync(ProductDto product)
+        public ProductRepository(ApiShopDbContext context)
         {
-            _products.Add(product);
-            return Task.CompletedTask;
+            _context = context;
         }
 
-        public Task UpdateAsync(ProductDto product)
+        public async Task AddAsync(ProductDao product, CancellationToken cancellationToken = default)
         {
-            var existing = _products.FirstOrDefault(p => p.Id == product.Id);
-            if (existing != null)
-            {
-                _products.Remove(existing);
-                _products.Add(product);
-            }
-            return Task.CompletedTask;
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var product = _products.FirstOrDefault(p => p.Id == id);
+            var product = await _context.Products.FindAsync(new object[] { id }, cancellationToken);
             if (product != null)
-                _products.Remove(product);
+            {
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+        }
 
-            return Task.CompletedTask;
+        public async Task<IEnumerable<ProductDao>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            return await _context.Products.ToListAsync(cancellationToken);
+        }
+
+        public async Task<ProductDao?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Products.FindAsync(new object[] { id }, cancellationToken);
+        }
+
+        public async Task<IEnumerable<ProductDao>> GetByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Products
+                .Where(p => p.CategoryId == categoryId)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task UpdateAsync(ProductDao product, CancellationToken cancellationToken = default)
+        {
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }
