@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -8,20 +9,15 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const { login } = useAuth();
 
-  const handleLogin = async (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await fetch('https://localhost:7032/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (res.ok) {
-    const user = await res.json();
-    login(user);
-    navigate('/');
-    } else {
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      login(response.data); // context login
+      navigate('/');
+    } catch (err) {
       alert('Identifiants invalides');
     }
   };
@@ -38,7 +34,7 @@ const LoginPage = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
               Connexion à votre compte
             </h1>
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                   Votre email

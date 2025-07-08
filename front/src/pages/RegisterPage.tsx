@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import api from '../api/axios';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -17,15 +18,10 @@ const RegisterPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await fetch('https://localhost:7032/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-
-    if (res.ok) {
+    try {
+      await api.post('/auth/register', form);
       navigate('/login');
-    } else {
+    } catch (err) {
       alert('Erreur lors de l’inscription');
     }
   };
