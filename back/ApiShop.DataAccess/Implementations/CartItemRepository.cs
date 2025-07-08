@@ -1,48 +1,57 @@
-using ApiShop.Common.DTO;
+using ApiShop.Common.DAO;
 using ApiShop.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiShop.DataAccess.Implementations
 {
     public class CartItemRepository : ICartItemRepository
     {
-        private readonly List<CartItemDto> _cartItems = new();
+        private readonly ApiShopDbContext _context;
 
-        public Task<IEnumerable<CartItemDto>> GetByUserIdAsync(Guid userId) =>
-            Task.FromResult<IEnumerable<CartItemDto>>(_cartItems.Where(c => c.UserId == userId));
-
-        public Task<CartItemDto?> GetByIdAsync(Guid id) =>
-            Task.FromResult(_cartItems.FirstOrDefault(c => c.Id == id));
-
-        public Task AddAsync(CartItemDto item)
+        public CartItemRepository(ApiShopDbContext context)
         {
-            _cartItems.Add(item);
-            return Task.CompletedTask;
+            _context = context;
         }
 
-        public Task UpdateAsync(CartItemDto item)
+        public async Task<IEnumerable<CartItemDao>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            var existing = _cartItems.FirstOrDefault(c => c.Id == item.Id);
-            if (existing != null)
+            return await _context.CartItems
+                .Where(c => c.UserId == userId)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<CartItemDao?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.CartItems.FindAsync(new object[] { id }, cancellationToken);
+        }
+
+        public async Task AddAsync(CartItemDao item, CancellationToken cancellationToken = default)
+        {
+            _context.CartItems.Add(item);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task UpdateAsync(CartItemDao item, CancellationToken cancellationToken = default)
+        {
+            _context.CartItems.Update(item);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var item = await _context.CartItems.FindAsync(new object[] { id }, cancellationToken);
+            if (item is not null)
             {
-                _cartItems.Remove(existing);
-                _cartItems.Add(item);
+                _context.CartItems.Remove(item);
+                await _context.SaveChangesAsync(cancellationToken);
             }
-            return Task.CompletedTask;
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task ClearCartAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            var item = _cartItems.FirstOrDefault(c => c.Id == id);
-            if (item != null)
-                _cartItems.Remove(item);
-
-            return Task.CompletedTask;
-        }
-
-        public Task ClearCartAsync(Guid userId)
-        {
-            _cartItems.RemoveAll(c => c.UserId == userId);
-            return Task.CompletedTask;
+            var items = _context.CartItems.Where(c => c.UserId == userId);
+            _context.CartItems.RemoveRange(items);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }
