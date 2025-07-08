@@ -1,5 +1,6 @@
 using ApiShop.Business.Interfaces;
 using ApiShop.Common.DTO;
+using ApiShop.Common.Request;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiShop.WebAPI.Controllers
@@ -23,16 +24,33 @@ namespace ApiShop.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CartItemDto>> AddItem([FromBody] CartItemDto dto, CancellationToken cancellationToken)
+        public async Task<ActionResult<CartItemDto>> AddItem([FromBody] CartItemCreateRequest request, CancellationToken cancellationToken)
         {
+            var dto = new CartItemDto
+            {
+                Id = Guid.NewGuid(),
+                ProductId = request.ProductId,
+                Quantity = request.Quantity,
+                UserId = request.UserId
+            };
+
             var created = await _service.AddAsync(dto, cancellationToken);
             return CreatedAtAction(nameof(GetCartByUser), new { userId = created.UserId }, created);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateItem(Guid id, [FromBody] CartItemDto dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateItem(Guid id, [FromBody] CartItemUpdateRequest request, CancellationToken cancellationToken)
         {
-            if (id != dto.Id) return BadRequest();
+            if (id != request.Id) return BadRequest();
+
+            var dto = new CartItemDto
+            {
+                Id = request.Id,
+                ProductId = request.ProductId,
+                Quantity = request.Quantity,
+                UserId = request.UserId
+            };
+
             await _service.UpdateAsync(dto, cancellationToken);
             return NoContent();
         }
