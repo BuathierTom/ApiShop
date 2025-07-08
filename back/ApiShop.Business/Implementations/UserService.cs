@@ -24,7 +24,7 @@ namespace ApiShop.Business.Implementations
                 Email = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Role = request.Role,
+                Role = "Client",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
             };
 
@@ -67,5 +67,26 @@ namespace ApiShop.Business.Implementations
 
         public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
             => _repository.DeleteAsync(id, cancellationToken);
+        
+        public async Task<UserDto?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
+        {
+            var userDao = await _repository.GetByEmailAsync(request.Email, cancellationToken);
+            if (userDao is null)
+                return null;
+
+            bool isValid = BCrypt.Net.BCrypt.Verify(request.Password, userDao.PasswordHash);
+
+            return isValid ? userDao.ToDto() : null;
+        }
+        
+        public async Task PromoteToAdminAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            var user = await _repository.GetByIdAsync(userId, cancellationToken);
+            if (user is null)
+                throw new Exception("Utilisateur non trouvé.");
+
+            user.Role = "Admin";
+            await _repository.UpdateAsync(user, cancellationToken);
+        }
     }
 }

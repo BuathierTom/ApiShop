@@ -11,5 +11,7 @@ namespace ApiShop.Business.Interfaces
         Task<UserDto> CreateAsync(UserCreateRequest request, CancellationToken cancellationToken = default);
         Task UpdateAsync(UserDto dto, CancellationToken cancellationToken = default);
         Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<UserDto?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default);
+        Task PromoteToAdminAsync(Guid userId, CancellationToken cancellationToken = default);
     }
 }

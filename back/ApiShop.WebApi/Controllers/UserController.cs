@@ -68,5 +68,12 @@ namespace ApiShop.WebAPI.Controllers
             await _service.DeleteAsync(id, cancellationToken);
             return NoContent();
         }
+        
+        [HttpPatch("{id:guid}/promote")]
+        public async Task<IActionResult> Promote(Guid id, CancellationToken cancellationToken)
+        {
+            await _service.PromoteToAdminAsync(id, cancellationToken);
+            return NoContent();
+        }
     }
 }
