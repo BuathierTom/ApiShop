@@ -22,3 +22,7 @@ export const updateCartItem = async (cartItemId: string, quantity: number): Prom
 export const removeCartItem = async (cartItemId: string): Promise<void> => {
   await api.delete(`/cart/${cartItemId}`);
 };
+
+export const clearCart = async (userId: string): Promise<void> => {
+  await api.delete(`/cart/user/${userId}`);
+};

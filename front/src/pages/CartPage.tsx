@@ -2,9 +2,28 @@ import { useCart } from '../context/CartContext';
 import Header from '../components/Header';
 import { Trash } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { createOrder } from '../api/order';
+import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-toastify';
+import { clearCart } from '../api/cart';
 
 const CartPage = () => {
-  const { items, updateQuantity, removeFromCart } = useCart();
+  const { items, updateQuantity, removeFromCart, refreshCart } = useCart();
+
+  const { user } = useAuth();
+
+  const handleCheckout = async () => {
+    if (!user) return;
+    try {
+      await createOrder(user.id, items);
+      await clearCart(user.id); 
+      await refreshCart(); 
+      toast.success('Commande validée avec succès !');
+    } catch (error) {
+      console.error('Erreur lors de la commande :', error);
+      toast.error('Échec de la commande');
+    }
+  };
 
   const total = items.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
@@ -133,7 +152,7 @@ const CartPage = () => {
                     <span>{total.toFixed(2)} €</span>
                   </div>
 
-                  <button className="mt-6 w-full rounded-lg bg-green-600 hover:bg-green-700 px-5 py-2.5 text-sm font-medium text-white">
+                  <button onClick={handleCheckout} className="mt-6 w-full rounded-lg bg-green-600 hover:bg-green-700 px-5 py-2.5 text-sm font-medium text-white">
                     Valider la commande
                   </button>
 
