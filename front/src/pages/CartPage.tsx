@@ -4,7 +4,7 @@ import { Trash } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CartPage = () => {
-  const { items, removeFromCart } = useCart();
+  const { items, updateQuantity, removeFromCart } = useCart();
 
   const total = items.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
@@ -61,11 +61,34 @@ const CartPage = () => {
                         <p className="text-sm font-medium text-gray-900 dark:text-white">
                           Prix unitaire : {item.product.price.toFixed(2)} €
                         </p>
-                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                          Quantité : {item.quantity}
-                        </p>
-                        <p className="text-sm font-bold text-gray-900 dark:text-white">
-                          Total : {(item.product.price * item.quantity).toFixed(2)} €
+
+                        {/* Contrôle quantité */}
+                        <div className="mt-2">
+                          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Quantité :
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={async () => await updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                              className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
+                            >
+                              −
+                            </button>
+                            <span className="text-sm font-medium text-gray-900 dark:text-white">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={async () => await updateQuantity(item.id, item.quantity + 1)}
+                              className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+
+                        <p className="text-sm font-bold text-gray-900 dark:text-white mt-2">
+                          Total :{' '}
+                          {(item.product.price * item.quantity).toFixed(2)} €
                         </p>
                       </div>
 
@@ -92,7 +115,9 @@ const CartPage = () => {
                   </h3>
 
                   <div className="flex justify-between text-base mb-2">
-                    <span className="text-gray-600 dark:text-gray-400">Sous-total</span>
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Sous-total
+                    </span>
                     <span className="font-medium text-gray-900 dark:text-white">
                       {total.toFixed(2)} €
                     </span>
@@ -108,14 +133,14 @@ const CartPage = () => {
                     <span>{total.toFixed(2)} €</span>
                   </div>
 
-                <button className="mt-6 w-full rounded-lg bg-green-600 hover:bg-green-700 px-5 py-2.5 text-sm font-medium text-white">
-                Valider la commande
-                </button>
+                  <button className="mt-6 w-full rounded-lg bg-green-600 hover:bg-green-700 px-5 py-2.5 text-sm font-medium text-white">
+                    Valider la commande
+                  </button>
 
                   <div className="mt-4 flex items-center justify-center gap-1 text-sm text-gray-500 dark:text-gray-400">
                     ou
                     <Link
-                      to="/products"
+                      to="/"
                       className="inline-flex items-center gap-1 text-primary-700 underline hover:no-underline dark:text-primary-500"
                     >
                       Continuer vos achats
@@ -127,7 +152,11 @@ const CartPage = () => {
                         viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l7-7-7-7M2 12h20"></path>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 19l7-7-7-7M2 12h20"
+                        />
                       </svg>
                     </Link>
                   </div>

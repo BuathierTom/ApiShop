@@ -31,6 +31,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           id: item.id,
           quantity: item.quantity,
           product,
+          userId: item.userId,
         };
       })
     );
@@ -52,10 +53,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     await refreshCart();
   };
 
-  const updateQuantity = async (cartItemId: string, quantity: number) => {
-    await api.put(`/cart/${cartItemId}`, { quantity });
-    await refreshCart();
+  const updateQuantity = async (cartItemId: string, newQuantity: number) => {
+    const item = items.find(i => i.id === cartItemId);
+    if (!item || newQuantity < 1) return;
+
+    try {
+      await api.put(`/cart/${cartItemId}`, {
+        id: item.id,
+        productId: item.product.id,
+        quantity: newQuantity,
+        userId: item.userId,
+      });
+
+      await refreshCart();
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du panier :", error);
+    }
   };
+
 
   const removeFromCart = async (cartItemId: string) => {
     await api.delete(`/cart/${cartItemId}`);

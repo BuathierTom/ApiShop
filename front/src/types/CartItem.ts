@@ -11,4 +11,5 @@ export interface CartItemFull {
   id: string;
   quantity: number;
   product: ProductDto;
+  userId: string;
 }
