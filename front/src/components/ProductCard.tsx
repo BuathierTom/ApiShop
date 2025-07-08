@@ -10,26 +10,29 @@ const ProductCard = ({ product }: { product: ProductDto }) => {
     try {
       await addToCart(product);
       toast.success(`${product.name} ajouté au panier`);
-    } catch (error) {
+    } catch {
       toast.error("Une erreur est survenue");
     }
   };
 
   return (
-    <div className="border rounded-lg p-4 shadow hover:shadow-lg transition">
+    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition dark:border-gray-700 dark:bg-gray-800 flex flex-col">
       <img
         src={product.imageUrl || placeholder}
         alt={product.name}
-        className="w-full h-48 object-cover mb-2 rounded"
+        className="h-48 w-full object-contain rounded mb-4"
         onError={(e) => {
           (e.target as HTMLImageElement).src = placeholder;
         }}
       />
-      <h2 className="font-semibold text-lg">{product.name}</h2>
-      <p className="text-gray-500 mb-1">{product.price.toFixed(2)} €</p>
+
+      <h2 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">{product.name}</h2>
+
+      <p className="text-gray-600 dark:text-gray-300 mb-4">{product.price.toFixed(2)} €</p>
+
       <button
         onClick={handleAddToCart}
-        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 mt-2 cursor-pointer"
+        className="mt-auto w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
       >
         Ajouter au panier
       </button>
