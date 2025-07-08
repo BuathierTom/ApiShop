@@ -45,13 +45,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addToCart = async (product: ProductDto) => {
     if (!user) return;
-    await api.post('/cart', {
-      productId: product.id,
-      userId: user.id,
-      quantity: 1,
-    });
-    await refreshCart();
+
+    const existingItem = items.find(item => item.product.id === product.id);
+
+    if (existingItem) {
+      await updateQuantity(existingItem.id, existingItem.quantity + 1);
+    } else {
+      await api.post('/cart', {
+        productId: product.id,
+        userId: user.id,
+        quantity: 1,
+      });
+      await refreshCart();
+    }
   };
+
 
   const updateQuantity = async (cartItemId: string, newQuantity: number) => {
     const item = items.find(i => i.id === cartItemId);
