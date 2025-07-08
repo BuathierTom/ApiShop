@@ -1,5 +1,6 @@
 using ApiShop.Business.Interfaces;
 using ApiShop.Common.DTO;
+using ApiShop.Common.Request;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiShop.WebAPI.Controllers
@@ -37,16 +38,35 @@ namespace ApiShop.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<UserDto>> Create([FromBody] UserDto dto, CancellationToken cancellationToken)
+        public async Task<ActionResult<UserDto>> Create([FromBody] UserCreateRequest request, CancellationToken cancellationToken)
         {
+            var dto = new UserDto
+            {
+                Id = Guid.NewGuid(),
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Role = request.Role
+            };
+
             var created = await _service.CreateAsync(dto, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
-
+        
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UserDto dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UserUpdateRequest request, CancellationToken cancellationToken)
         {
-            if (id != dto.Id) return BadRequest();
+            if (id != request.Id) return BadRequest();
+
+            var dto = new UserDto
+            {
+                Id = request.Id,
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Role = request.Role
+            };
+
             await _service.UpdateAsync(dto, cancellationToken);
             return NoContent();
         }
