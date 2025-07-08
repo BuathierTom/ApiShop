@@ -1,5 +1,6 @@
 using ApiShop.Business.Interfaces;
 using ApiShop.Common.DTO;
+using ApiShop.Common.Request;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiShop.WebAPI.Controllers
@@ -37,16 +38,37 @@ namespace ApiShop.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<OrderDto>> Create([FromBody] OrderDto dto, CancellationToken cancellationToken)
+        public async Task<ActionResult<OrderDto>> Create([FromBody] OrderCreateRequest request, CancellationToken cancellationToken)
         {
+            var dto = new OrderDto
+            {
+                Id = Guid.NewGuid(),
+                UserId = request.UserId,
+                TotalPrice = request.TotalPrice,
+                CreatedAt = DateTime.UtcNow,
+                Status = "Pending",
+                Items = request.Items
+            };
+
             var created = await _service.CreateAsync(dto, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] OrderDto dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update(Guid id, [FromBody] OrderUpdateRequest request, CancellationToken cancellationToken)
         {
-            if (id != dto.Id) return BadRequest();
+            if (id != request.Id) return BadRequest();
+
+            var dto = new OrderDto
+            {
+                Id = request.Id,
+                UserId = request.UserId,
+                TotalPrice = request.TotalPrice,
+                Status = request.Status,
+                CreatedAt = DateTime.UtcNow,
+                Items = request.Items
+            };
+
             await _service.UpdateAsync(dto, cancellationToken);
             return NoContent();
         }
