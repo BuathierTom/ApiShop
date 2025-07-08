@@ -1,5 +1,6 @@
 using ApiShop.Business.Interfaces;
 using ApiShop.Common.DTO;
+using ApiShop.Common.Request;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiShop.WebAPI.Controllers
@@ -37,16 +38,31 @@ namespace ApiShop.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CategoryDto>> Create([FromBody] CategoryDto dto, CancellationToken cancellationToken)
+        public async Task<ActionResult<CategoryDto>> Create([FromBody] CategoryCreateRequest request, CancellationToken cancellationToken)
         {
+            var dto = new CategoryDto
+            {
+                Id = Guid.NewGuid(),
+                Name = request.Name,
+                ParentCategoryId = request.ParentCategoryId
+            };
+
             var created = await _service.CreateAsync(dto, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] CategoryDto dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update(Guid id, [FromBody] CategoryUpdateRequest request, CancellationToken cancellationToken)
         {
-            if (id != dto.Id) return BadRequest();
+            if (id != request.Id) return BadRequest();
+
+            var dto = new CategoryDto
+            {
+                Id = request.Id,
+                Name = request.Name,
+                ParentCategoryId = request.ParentCategoryId
+            };
+
             await _service.UpdateAsync(dto, cancellationToken);
             return NoContent();
         }
