@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProductListPage from './pages/ProductListPage';
 import NotFoundPage from './pages/NotFoundPage';
+import CartPage from './pages/CartPage';
 
 function App() {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={user ? <HomePage /> : <Navigate to="/login" replace />} />
         <Route path="/products" element={<ProductListPage />} />
+        <Route path="/cart" element={<CartPage />} />
         <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" replace />} />
         <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/" replace />} />
         <Route path="*" element={<NotFoundPage />} />

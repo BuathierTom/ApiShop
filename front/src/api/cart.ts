@@ -1,8 +1,8 @@
 import api from './axios';
 import type { ProductDto } from '../types/Product';
-import type { CartItemDto } from '../types/CartItem';
+import type { CartItemLite } from '../types/CartItem';
 
-export const getCartByUserId = async (userId: string): Promise<CartItemDto[]> => {
+export const getCartByUserId = async (userId: string): Promise<CartItemLite[]> => {
   const res = await api.get(`/cart/${userId}`);
   return res.data;
 };

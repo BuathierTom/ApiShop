@@ -1,8 +1,14 @@
 import type { ProductDto } from './Product';
 
-export interface CartItemDto {
+export interface CartItemLite {
   id: string;
-  product: ProductDto;
-  quantity: number;
+  productId: string;
   userId: string;
+  quantity: number;
+}
+
+export interface CartItemFull {
+  id: string;
+  quantity: number;
+  product: ProductDto;
 }
