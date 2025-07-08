@@ -1,14 +1,14 @@
-using ApiShop.Common.DTO;
+using ApiShop.Common.DAO;
 
 namespace ApiShop.DataAccess.Interfaces
 {
     public interface IOrderRepository
     {
-        Task<OrderDto?> GetByIdAsync(Guid id);
-        Task<IEnumerable<OrderDto>> GetByUserIdAsync(Guid userId);
-        Task<IEnumerable<OrderDto>> GetAllAsync();
-        Task AddAsync(OrderDto order);
-        Task UpdateAsync(OrderDto order);
-        Task DeleteAsync(Guid id);
+        Task<OrderDao?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<IEnumerable<OrderDao>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<IEnumerable<OrderDao>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+        Task AddAsync(OrderDao order, CancellationToken cancellationToken = default);
+        Task UpdateAsync(OrderDao order, CancellationToken cancellationToken = default);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

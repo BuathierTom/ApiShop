@@ -13,7 +13,7 @@ namespace ApiShop.DataAccess
         public DbSet<ProductDao> Products { get; set; }
         public DbSet<CategoryDao> Categories { get; set; }
         public DbSet<CartItemDao> CartItems { get; set; }
-        public DbSet<OrderDto> Orders { get; set; }
+        public DbSet<OrderDao> Orders { get; set; }
         public DbSet<OrderItemDto> OrderItems { get; set; }
     }
 }

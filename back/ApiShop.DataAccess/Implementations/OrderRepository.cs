@@ -1,45 +1,55 @@
-using ApiShop.Common.DTO;
+using ApiShop.Common.DAO;
 using ApiShop.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiShop.DataAccess.Implementations
 {
     public class OrderRepository : IOrderRepository
     {
-        private readonly List<OrderDto> _orders = new();
+        private readonly ApiShopDbContext _context;
 
-        public Task<OrderDto?> GetByIdAsync(Guid id) =>
-            Task.FromResult(_orders.FirstOrDefault(o => o.Id == id));
-
-        public Task<IEnumerable<OrderDto>> GetByUserIdAsync(Guid userId) =>
-            Task.FromResult<IEnumerable<OrderDto>>(_orders.Where(o => o.UserId == userId));
-
-        public Task<IEnumerable<OrderDto>> GetAllAsync() =>
-            Task.FromResult<IEnumerable<OrderDto>>(_orders);
-
-        public Task AddAsync(OrderDto order)
+        public OrderRepository(ApiShopDbContext context)
         {
-            _orders.Add(order);
-            return Task.CompletedTask;
+            _context = context;
         }
 
-        public Task UpdateAsync(OrderDto order)
+        public async Task<OrderDao?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var existing = _orders.FirstOrDefault(o => o.Id == order.Id);
-            if (existing != null)
+            return await _context.Orders.FindAsync(new object[] { id }, cancellationToken);
+        }
+
+        public async Task<IEnumerable<OrderDao>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            return await _context.Orders.ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<OrderDao>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Orders
+                .Where(o => o.UserId == userId)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task AddAsync(OrderDao order, CancellationToken cancellationToken = default)
+        {
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task UpdateAsync(OrderDao order, CancellationToken cancellationToken = default)
+        {
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var order = await _context.Orders.FindAsync(new object[] { id }, cancellationToken);
+            if (order is not null)
             {
-                _orders.Remove(existing);
-                _orders.Add(order);
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync(cancellationToken);
             }
-            return Task.CompletedTask;
-        }
-
-        public Task DeleteAsync(Guid id)
-        {
-            var order = _orders.FirstOrDefault(o => o.Id == id);
-            if (order != null)
-                _orders.Remove(order);
-
-            return Task.CompletedTask;
         }
     }
 }
