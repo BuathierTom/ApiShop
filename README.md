@@ -2,8 +2,6 @@
 
 `ApiShop` est une API REST en ASP.NET Core (C#), conçue pour gérer les fonctionnalités d’un site e-commerce : gestion des utilisateurs, des produits, des catégories, des paniers et des commandes.
 
----
-
 ## 📂 Structure du projet
 
 ```
@@ -72,8 +70,6 @@ dotnet user-secrets set "ConnectionStrings:ApiShop" "Host=localhost;Port=5432;Da
 ```bash
 dotnet ef database update -s ApiShop.WebApi
 ```
-
----
 
 ### ▶️ Lancer l’API
 
