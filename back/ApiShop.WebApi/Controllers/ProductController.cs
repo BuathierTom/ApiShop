@@ -1,5 +1,6 @@
 using ApiShop.Business.Interfaces;
 using ApiShop.Common.DTO;
+using ApiShop.Common.Request;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiShop.WebAPI.Controllers
@@ -37,16 +38,39 @@ namespace ApiShop.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductDto>> Create([FromBody] ProductDto dto, CancellationToken cancellationToken)
+        public async Task<ActionResult<ProductDto>> Create([FromBody] ProductCreateRequest request, CancellationToken cancellationToken)
         {
+            var dto = new ProductDto
+            {
+                Id = Guid.NewGuid(),
+                Name = request.Name,
+                Description = request.Description,
+                Price = request.Price,
+                Stock = request.Stock,
+                CategoryId = request.CategoryId,
+                ImageUrl = request.ImageUrl
+            };
+
             var created = await _service.CreateAsync(dto, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] ProductDto dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update(Guid id, [FromBody] ProductUpdateRequest request, CancellationToken cancellationToken)
         {
-            if (id != dto.Id) return BadRequest();
+            if (id != request.Id) return BadRequest();
+
+            var dto = new ProductDto
+            {
+                Id = request.Id,
+                Name = request.Name,
+                Description = request.Description,
+                Price = request.Price,
+                Stock = request.Stock,
+                CategoryId = request.CategoryId,
+                ImageUrl = request.ImageUrl
+            };
+
             await _service.UpdateAsync(dto, cancellationToken);
             return NoContent();
         }
