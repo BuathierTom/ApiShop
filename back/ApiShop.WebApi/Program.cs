@@ -50,6 +50,10 @@ builder.Configuration.AddUserSecrets<Program>(true).Build();
 builder.Services.AddDbContext<ApiShopDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ApiShop")));
 
+// --- Health Checks
+builder.Services.AddHealthChecks()
+    .AddNpgSql(builder.Configuration.GetConnectionString("ApiShop")!);
+
 var app = builder.Build();
 
 // --- Pipeline
@@ -70,6 +74,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(CorsPolicyName);
+
+app.MapHealthChecks("/health");
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
