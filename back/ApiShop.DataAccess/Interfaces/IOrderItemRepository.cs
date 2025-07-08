@@ -1,13 +1,11 @@
-using ApiShop.Common.DTO;
+using ApiShop.Common.DAO;
 
 namespace ApiShop.DataAccess.Interfaces
 {
     public interface IOrderItemRepository
     {
-        Task<IEnumerable<OrderItemDto>> GetByOrderIdAsync(Guid orderId);
-        Task<OrderItemDto?> GetByIdAsync(Guid id);
-        Task AddAsync(OrderItemDto item);
-        Task UpdateAsync(OrderItemDto item);
-        Task DeleteAsync(Guid id);
+        Task<IEnumerable<OrderItemDao>> GetByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default);
+        Task AddRangeAsync(IEnumerable<OrderItemDao> items, CancellationToken cancellationToken = default);
+        Task DeleteByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default);
     }
 }

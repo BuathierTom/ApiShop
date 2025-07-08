@@ -1,42 +1,36 @@
-using ApiShop.Common.DTO;
+using ApiShop.Common.DAO;
 using ApiShop.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiShop.DataAccess.Implementations
 {
     public class OrderItemRepository : IOrderItemRepository
     {
-        private readonly List<OrderItemDto> _orderItems = new();
+        private readonly ApiShopDbContext _context;
 
-        public Task<IEnumerable<OrderItemDto>> GetByOrderIdAsync(Guid orderId) =>
-            Task.FromResult<IEnumerable<OrderItemDto>>(_orderItems.Where(i => i.OrderId == orderId));
-
-        public Task<OrderItemDto?> GetByIdAsync(Guid id) =>
-            Task.FromResult(_orderItems.FirstOrDefault(i => i.Id == id));
-
-        public Task AddAsync(OrderItemDto item)
+        public OrderItemRepository(ApiShopDbContext context)
         {
-            _orderItems.Add(item);
-            return Task.CompletedTask;
+            _context = context;
         }
 
-        public Task UpdateAsync(OrderItemDto item)
+        public async Task<IEnumerable<OrderItemDao>> GetByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default)
         {
-            var existing = _orderItems.FirstOrDefault(i => i.Id == item.Id);
-            if (existing != null)
-            {
-                _orderItems.Remove(existing);
-                _orderItems.Add(item);
-            }
-            return Task.CompletedTask;
+            return await _context.OrderItems
+                .Where(oi => oi.OrderId == orderId)
+                .ToListAsync(cancellationToken);
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task AddRangeAsync(IEnumerable<OrderItemDao> items, CancellationToken cancellationToken = default)
         {
-            var item = _orderItems.FirstOrDefault(i => i.Id == id);
-            if (item != null)
-                _orderItems.Remove(item);
+            _context.OrderItems.AddRange(items);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
 
-            return Task.CompletedTask;
+        public async Task DeleteByOrderIdAsync(Guid orderId, CancellationToken cancellationToken = default)
+        {
+            var items = _context.OrderItems.Where(oi => oi.OrderId == orderId);
+            _context.OrderItems.RemoveRange(items);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

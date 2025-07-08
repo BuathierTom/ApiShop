@@ -14,6 +14,6 @@ namespace ApiShop.DataAccess
         public DbSet<CategoryDao> Categories { get; set; }
         public DbSet<CartItemDao> CartItems { get; set; }
         public DbSet<OrderDao> Orders { get; set; }
-        public DbSet<OrderItemDto> OrderItems { get; set; }
+        public DbSet<OrderItemDao> OrderItems { get; set; }
     }
 }
