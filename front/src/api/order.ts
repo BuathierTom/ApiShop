@@ -1,5 +1,6 @@
 import api from './axios';
 import type { CartItemFull } from '../types/CartItem';
+import type { OrderDto } from '../types/Order';
 
 export const createOrder = async (userId: string, items: CartItemFull[]) => {
   const orderItems = items.map((item) => ({
@@ -22,5 +23,10 @@ export const createOrder = async (userId: string, items: CartItemFull[]) => {
   };
 
   const res = await api.post('/orders', payload);
+  return res.data;
+};
+
+export const getOrdersByUserId = async (userId: string): Promise<OrderDto[]> => {
+  const res = await api.get(`/orders/user/${userId}`);
   return res.data;
 };
