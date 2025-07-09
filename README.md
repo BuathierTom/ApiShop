@@ -1,80 +1,129 @@
 # ApiShop
 
-`ApiShop` est une API REST en ASP.NET Core (C#), conçue pour gérer les fonctionnalités d’un site e-commerce : gestion des utilisateurs, des produits, des catégories, des paniers et des commandes.
+`ApiShop` est une application e-commerce complète composée d’une API REST back-end en ASP.NET Core (C#) et d’un front-end React/TypeScript.
 
 ## 📂 Structure du projet
 
 ```
 ApiShop.sln
-├── ApiShop.WebApi/           ← Entrée principale de l’API (controllers)
-├── ApiShop.Business/         ← Logique métier (services)
-├── ApiShop.DataAccess/       ← Requêtes base de données (repositories, EF Core)
-├── ApiShop.Common/           ← Objets partagés (DTO, DAO, Requests)
-└── ApiShop.WebApi.Tests/     ← Tests unitaires
+├── back/
+│   ├── ApiShop.Business/        ← Logique métier (services)
+│   ├── ApiShop.Common/          ← Objets partagés (DTO, DAO, Requests)
+│   ├── ApiShop.DataAccess/      ← Accès base de données (repositories, migrations)
+│   └── ApiShop.WebApi/          ← API principale (controllers, Program.cs)
+├── front/
+│   ├── public/                 
+│   └── src/
+│       ├── api/                
+│       ├── components/        
+│       ├── context/            
+│       ├── hooks/              
+│       ├── pages/              
+│       ├── types/              
+│       ├── App.tsx             
+│       ├── index.css           
+│       ├── main.tsx            
+│       └── vite.config.ts      
 ```
 
-## 🚀 Fonctionnalités disponibles
+## 🚀 Fonctionnalités Back-End
 
 ### 👤 Utilisateurs
 
-* Inscription (`POST /api/auth/register`)
-* Connexion sécurisée (`POST /api/auth/login`)
+* Inscription
+* Connexion sécurisée
 * Rôle par défaut : `Client`
-* Promotion d’un utilisateur (`PATCH /api/users/{id}/promote`)
+* Promotion d’utilisateur
 
 ### 🛍️ Produits
 
-* CRUD produits (`GET`, `POST`, `PUT`, `DELETE`)
+* CRUD complet (`GET`, `POST`, `PUT`, `DELETE`)
 * Filtrage par catégorie
 
 ### 📂 Catégories
 
 * CRUD catégories
-* Catégories parentes/enfants possibles
+* Gestion de catégories parent/enfant
 
 ### 🛒 Panier
 
-* Ajout d’article au panier
-* Modification de quantité
-* Suppression et vidage du panier
+* Ajout, modification quantité, suppression
 
 ### 📦 Commandes
 
-* Création d’une commande avec articles
-* Historique par utilisateur
-* Mise à jour du statut (`Pending`, `Paid`, etc.)
+* Création commande avec articles
+* Historique commandes par utilisateur
+* Modification statut commande (`Pending`, `Paid`, etc.)
 
-## ⚙️ Démarrage du projet Back-End
+## 🛠️ Démarrage du Back-End
 
-### ✅ Prérequis
+### Prérequis
 
 * [.NET 9 SDK](https://dotnet.microsoft.com/download)
 * PostgreSQL
-* [EF Core CLI](https://learn.microsoft.com/ef/core/cli/dotnet) :
+* [EF Core CLI](https://learn.microsoft.com/ef/core/cli/dotnet)
 
-  ```bash
-  dotnet tool install --global dotnet-ef
-  ```
+```bash
+dotnet tool install --global dotnet-ef
+```
 
-### 🔐 Configuration (connexion BDD)
-
-Stockée dans les **secrets utilisateur** :
+### Configuration connexion BDD
 
 ```bash
 dotnet user-secrets init
 dotnet user-secrets set "ConnectionStrings:ApiShop" "Host=localhost;Port=5432;Database=ApiShop;Username=postgres;Password=yourPassword"
 ```
 
-### 🧱 Appliquer la migration DB
+### Migration et lancement
 
 ```bash
 dotnet ef database update -s ApiShop.WebApi
-```
-
-### ▶️ Lancer l’API
-
-Depuis la racine :
-
-```bash
 dotnet run --project ApiShop.WebApi
 ```
+
+## ⚛️ Fonctionnalités Front-End (React + TypeScript)
+
+* Pages produits, panier, commandes, authentification
+* Gestion du panier en contexte React
+* Composants UI avec TailwindCSS
+
+## 🛠️ Démarrage du Front-End
+
+### Prérequis
+
+* [Node.js 20+](https://nodejs.org/en/download/)
+* npm ou yarn
+
+### Installer dépendances
+
+```bash
+cd front
+npm install
+```
+
+### Lancer en mode dev
+
+```bash
+npm run dev
+```
+
+L’app est accessible sur `http://localhost:5173`.
+
+## 🧩 Liens importants
+
+* API (Swagger non déployé) : `https://apishop-0b1k.onrender.com`
+* Front-End React : `https://buathier-apishop.vercel.app/`
+
+## 📦 Déploiement
+
+* **Back-End**
+  Déployé sur **Render** avec la base de données PostgreSQL hébergée sur **NeonDB**.
+
+* **Front-End**
+  Déployé sur **Vercel**, optimisé pour les performances et la distribution rapide.
+
+## 📝 Notes
+
+* Sécurité : Swagger désactivé en production (via `if (app.Environment.IsDevelopment())` dans `Program.cs`)
+* Gestion des rôles pour admin back-office en développement (non intégré en prod)
+* Base de données PostgreSQL avec migrations EF Core
