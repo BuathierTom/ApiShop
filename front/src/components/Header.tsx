@@ -1,12 +1,18 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ShoppingCart, User } from 'lucide-react';
 import { useState } from 'react';
+import { useCart } from '../context/CartContext';
+import {  } from 'react-router-dom';
 
 const Header = () => {
   const { user, logout } = useAuth();
+  const { items } = useCart(); 
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
 
   const handleLogout = () => {
     logout();
@@ -66,18 +72,18 @@ const Header = () => {
         {/* Icons à droite */}
         <div className="flex items-center gap-4 relative">
           {/* Panier */}
-          <NavLink
-            to="/cart"
-            className={({ isActive }) =>
-              `text-gray-600 hover:text-blue-600 ${isActive ? 'text-blue-600' : ''}`
-            }
-          >
+          <NavLink to="/cart" className="relative text-gray-600 hover:text-blue-600">
             <ShoppingCart className="w-6 h-6" />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+                {totalItems}
+              </span>
+            )}
           </NavLink>
 
           {/* Utilisateur */}
           {user && (
-            <div className="relative">
+            <div className="relative ml-4">
               <button
                 onClick={() => setOpen(!open)}
                 className="text-gray-700 hover:text-blue-600"
