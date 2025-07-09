@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://localhost:7032/api',
+  baseURL: 'https://apishop-0b1k.onrender.com/api',
 });
 
 export default api;
