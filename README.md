@@ -111,7 +111,7 @@ L’app est accessible sur `http://localhost:5173`.
 
 ## 🧩 Liens importants
 
-* API (Swagger non déployé) : `https://apishop-0b1k.onrender.com`
+* API (Swagger non déployé) : `https://api.apishop.buathier-tom.fr`
 * Front-End React : `https://buathier-apishop.vercel.app/`
 
 ## 📦 Déploiement

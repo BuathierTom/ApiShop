@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://apishop-0b1k.onrender.com/api',
+  baseURL: 'https://api.apishop.buathier-tom.fr/api',
 });
 
 export default api;
