@@ -9,6 +9,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import CartPage from './pages/CartPage';
 import OrdersPage from './pages/OrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
+import ProfilePage from './pages/ProfilePage';
 
 const RequireAuth = ({ children }: { children: ReactElement }) => {
   const { user } = useAuth();
@@ -43,6 +44,14 @@ function App() {
           element={
             <RequireAuth>
               <OrdersPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <RequireAuth>
+              <ProfilePage />
             </RequireAuth>
           }
         />

@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Menu, ShoppingCart, User, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -59,20 +59,15 @@ const Header = () => {
               <NavLink
                 key={to}
                 to={to}
-                className="rounded-full px-3 py-2 text-sm transition"
+                className={({ isActive }) =>
+                  `nav-pill text-sm ${
+                    isActive ? 'nav-active' : 'text-slate-500 hover:text-brand hover:bg-brand-tint'
+                  }`
+                }
                 onClick={() => setMobileOpen(false)}
                 end={to === '/'}
               >
-                {({ isActive }) => (
-                  <span
-                    className={`flex items-center gap-2 ${
-                      isActive ? 'text-brand font-semibold' : 'text-slate-500 hover:text-brand'
-                    }`}
-                  >
-                    {label}
-                    {isActive && <span className="h-1 w-1 rounded-full bg-brand-dot" />}
-                  </span>
-                )}
+                {label}
               </NavLink>
             ))}
           </nav>
@@ -115,6 +110,16 @@ const Header = () => {
                       </p>
                       <span className="chip mt-1 text-[11px]">{user.role}</span>
                     </div>
+                    <Link
+                      to="/profile"
+                      onClick={() => {
+                        setProfileOpen(false);
+                      }}
+                      className="mb-3 inline-flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-[color:var(--color-brand-soft)] hover:text-brand"
+                    >
+                      Mon profil
+                      <User className="h-4 w-4" />
+                    </Link>
                     <button
                       onClick={handleLogout}
                       className="neon-button w-full justify-center text-xs"
@@ -140,14 +145,22 @@ const Header = () => {
               onClick={() => {
                 setMobileOpen(false);
               }}
-              className={({ isActive }) =>
-                `flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-medium transition ${
-                  isActive ? 'bg-brand-tint text-brand' : 'text-slate-600 hover:bg-slate-100'
-                }`
-              }
             >
-              {label}
-              <span className="text-xs text-brand">›</span>
+              {({ isActive }) => (
+                <div
+                  className={`flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-medium transition ${
+                    isActive ? 'bg-brand-tint text-brand' : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <span
+                    className={`nav-pill ${isActive ? 'nav-active' : ''}`}
+                    style={{ padding: '0.35rem 0.95rem' }}
+                  >
+                    {label}
+                  </span>
+                  <span className={`text-xs ${isActive ? 'text-brand' : 'text-slate-400'}`}>›</span>
+                </div>
+              )}
             </NavLink>
           ))}
         </div>
