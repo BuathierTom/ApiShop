@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import type { Location } from 'react-router-dom';
 import { Fingerprint, ShieldCheck } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../api/axios';
@@ -8,10 +9,16 @@ import { useAuth } from '../context/AuthContext';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const redirectLocation = (location.state as { from?: Location } | undefined)?.from;
+  const redirectPath =
+    redirectLocation !== undefined
+      ? `${redirectLocation.pathname}${redirectLocation.search ?? ''}`
+      : '/';
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -22,7 +29,7 @@ const LoginPage = () => {
       const response = await api.post('/auth/login', { email, password });
       login(response.data);
       toast.success('Connexion réussie.');
-      navigate('/');
+      navigate(redirectPath, { replace: true });
     } catch {
       toast.error('Identifiants invalides. Veuillez réessayer.');
     } finally {

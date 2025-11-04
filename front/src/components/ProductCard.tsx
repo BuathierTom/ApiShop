@@ -1,13 +1,24 @@
 import type { ProductDto } from '../types/Product';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product }: { product: ProductDto }) => {
   const { addToCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const placeholder = 'https://placehold.co/300x200?text=Image+non+disponible';
   const isAvailable = product.stock > 0;
 
   const handleAddToCart = async () => {
+    if (!user) {
+      toast.info('Connectez-vous pour ajouter des produits au panier.');
+      navigate('/login', { state: { from: location } });
+      return;
+    }
+
     try {
       await addToCart(product);
       toast.success(`${product.name} ajouté au panier`);
