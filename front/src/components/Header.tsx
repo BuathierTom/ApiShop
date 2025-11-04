@@ -1,120 +1,157 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { ShoppingCart, User } from 'lucide-react';
 import { useState } from 'react';
+import { Menu, ShoppingCart, User, X } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import {  } from 'react-router-dom';
 
 const Header = () => {
   const { user, logout } = useAuth();
-  const { items } = useCart(); 
+  const { items } = useCart();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
-
   const handleLogout = () => {
+    setProfileOpen(false);
     logout();
     navigate('/login', { replace: true });
   };
 
-  const activeClass =
-    'text-primary-700 font-semibold bg-gray-100 dark:text-white';
-  const inactiveClass =
-    'text-gray-700 hover:text-primary-700 dark:text-gray-400 dark:hover:text-white';
+  const navItems = [
+    { to: '/', label: 'Accueil', exact: true },
+    { to: '/products', label: 'Produits' },
+    { to: '/orders', label: 'Commandes' },
+  ];
 
   return (
-    <header className="bg-white shadow-sm mb-6">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-        {/* Logo */}
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            `flex items-center gap-2 text-lg font-bold ${
-              isActive ? 'text-blue-600' : 'text-blue-600'
-            }`
-          }
-        >
-          <img src="/logo.svg" alt="logo" className="h-8 w-8" />
-          ApiShop
-        </NavLink>
+    <header className="sticky top-0 z-40 bg-transparent">
+      <div className="mx-auto mt-6 w-full max-w-6xl px-4">
+        <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 shadow-lg shadow-slate-200/60 backdrop-blur-sm md:px-6">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              className="text-slate-600 transition hover:text-slate-900 sm:hidden"
+              onClick={() => setMobileOpen((prev) => !prev)}
+              aria-label="Ouvrir le menu"
+            >
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
 
-        {/* Nav */}
-        <nav className="hidden sm:flex gap-6 text-sm">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `px-2 py-1 rounded ${isActive ? activeClass : inactiveClass}`
-            }
-            aria-current="page"
-          >
-            Accueil
-          </NavLink>
-          <NavLink
-            to="/products"
-            className={({ isActive }) =>
-              `px-2 py-1 rounded ${isActive ? activeClass : inactiveClass}`
-            }
-          >
-            Produits
-          </NavLink>
-          <NavLink
-            to="/orders"
-            className={({ isActive }) =>
-              `px-2 py-1 rounded ${isActive ? activeClass : inactiveClass}`
-            }
-          >
-            Mes commandes
-          </NavLink>
-        </nav>
-
-        {/* Icons à droite */}
-        <div className="flex items-center gap-4 relative">
-          {/* Panier */}
-          <NavLink to="/cart" className="relative text-gray-600 hover:text-blue-600">
-            <ShoppingCart className="w-6 h-6" />
-            {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
-                {totalItems}
-              </span>
-            )}
-          </NavLink>
-
-          {/* Utilisateur */}
-          {user && (
-            <div className="relative ml-4">
-              <button
-                onClick={() => setOpen(!open)}
-                className="text-gray-700 hover:text-blue-600"
-                aria-haspopup="true"
-                aria-expanded={open}
+            <NavLink
+              to="/"
+              className="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-800 transition hover:bg-slate-200"
+              onClick={() => setMobileOpen(false)}
+            >
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-full"
+                style={{ backgroundImage: 'linear-gradient(135deg, #8b87ee 0%, #a79df4 55%, #f9c97d 100%)' }}
               >
-                <User className="w-6 h-6" />
-              </button>
+                <img src="/logo.svg" alt="ApiShop" className="h-5 w-5" />
+              </span>
+              <span>ApiShop</span>
+            </NavLink>
+          </div>
 
-              {open && (
-                <div
-                  className="absolute right-0 top-9 bg-white border shadow rounded p-3 w-48 z-10"
-                  role="menu"
-                >
-                  <p className="text-sm font-medium mb-1">
-                    {user.firstName} {user.lastName}
-                  </p>
-                  <p className="text-xs text-gray-500 mb-3">{user.role}</p>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded"
-                    role="menuitem"
+          <nav className="hidden items-center gap-3 sm:flex">
+            {navItems.map(({ to, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className="rounded-full px-3 py-2 text-sm transition"
+                onClick={() => setMobileOpen(false)}
+                end={to === '/'}
+              >
+                {({ isActive }) => (
+                  <span
+                    className={`flex items-center gap-2 ${
+                      isActive ? 'text-brand font-semibold' : 'text-slate-500 hover:text-brand'
+                    }`}
                   >
-                    Déconnexion
-                  </button>
-                </div>
+                    {label}
+                    {isActive && <span className="h-1 w-1 rounded-full bg-brand-dot" />}
+                  </span>
+                )}
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-4">
+            <NavLink
+              to="/cart"
+              className="relative flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-[color:var(--color-brand-soft)] hover:text-brand"
+              onClick={() => setMobileOpen(false)}
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {totalItems > 0 && (
+                <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-[1.5rem] items-center justify-center rounded-full bg-brand px-1 text-xs font-semibold text-white">
+                  {totalItems}
+                </span>
               )}
-            </div>
-          )}
+              <span className="sr-only">Voir le panier</span>
+            </NavLink>
+
+            {user && (
+              <div className="relative">
+                <button
+                  onClick={() => setProfileOpen((prev) => !prev)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-[color:var(--color-brand-soft)] hover:text-brand"
+                  aria-haspopup="true"
+                  aria-expanded={profileOpen}
+                >
+                  <User className="h-5 w-5" />
+                  <span className="sr-only">Ouvrir le menu utilisateur</span>
+                </button>
+
+                {profileOpen && (
+                  <div
+                    className="absolute right-0 top-12 w-56 rounded-xl border border-slate-200 bg-white/95 p-4 text-slate-700 shadow-xl shadow-slate-300/40 backdrop-blur-sm"
+                    role="menu"
+                  >
+                    <div className="mb-3">
+                      <p className="text-sm font-semibold text-slate-900">
+                        {user.firstName} {user.lastName}
+                      </p>
+                      <span className="chip mt-1 text-[11px]">{user.role}</span>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="neon-button w-full justify-center text-xs"
+                      role="menuitem"
+                    >
+                      Déconnexion
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
+      {mobileOpen && (
+        <div className="mx-auto mt-3 w-full max-w-6xl space-y-2 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-lg shadow-slate-200/70 backdrop-blur-sm sm:hidden">
+          {navItems.map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={to === '/'}
+              onClick={() => {
+                setMobileOpen(false);
+              }}
+              className={({ isActive }) =>
+                `flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-medium transition ${
+                  isActive ? 'bg-brand-tint text-brand' : 'text-slate-600 hover:bg-slate-100'
+                }`
+              }
+            >
+              {label}
+              <span className="text-xs text-brand">›</span>
+            </NavLink>
+          ))}
+        </div>
+      )}
     </header>
   );
 };

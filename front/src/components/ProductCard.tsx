@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 const ProductCard = ({ product }: { product: ProductDto }) => {
   const { addToCart } = useCart();
   const placeholder = 'https://placehold.co/300x200?text=Image+non+disponible';
+  const isAvailable = product.stock > 0;
 
   const handleAddToCart = async () => {
     try {
@@ -16,27 +17,45 @@ const ProductCard = ({ product }: { product: ProductDto }) => {
   };
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition dark:border-gray-700 dark:bg-gray-800 flex flex-col">
-      <img
-        src={product.imageUrl || placeholder}
-        alt={product.name}
-        className="h-48 w-full object-contain rounded mb-4"
-        onError={(e) => {
-          (e.target as HTMLImageElement).src = placeholder;
-        }}
-      />
+    <article className="group flex h-full flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-200/60 transition hover:-translate-y-1 hover:border-[color:var(--color-brand-soft)]">
+      <div className="flex items-center justify-between text-sm">
+        <span className="chip">
+          {isAvailable ? `${product.stock} en stock` : 'Bientôt'}
+        </span>
+        <span
+          className="rounded-full px-3 py-1 font-semibold text-brand"
+          style={{ border: '1px solid var(--color-brand-soft)', backgroundColor: 'var(--color-brand-tint)' }}
+        >
+          {product.price.toFixed(2)} €
+        </span>
+      </div>
 
-      <h2 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">{product.name}</h2>
+      <div className="flex h-44 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
+        <img
+          src={product.imageUrl || placeholder}
+          alt={product.name}
+          className="h-full w-full object-contain transition duration-500 group-hover:scale-105"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = placeholder;
+          }}
+        />
+      </div>
 
-      <p className="text-gray-600 dark:text-gray-300 mb-4">{product.price.toFixed(2)} €</p>
+      <div className="flex flex-1 flex-col gap-2">
+        <h2 className="text-lg font-semibold text-slate-900">{product.name}</h2>
+        <p className="text-sm leading-relaxed text-slate-600">
+          {product.description || 'Un produit sélectionné pour ses performances et sa fiabilité.'}
+        </p>
+      </div>
 
       <button
         onClick={handleAddToCart}
-        className="mt-auto w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+        disabled={!isAvailable}
+        className={`neon-button w-full justify-center ${!isAvailable ? 'cursor-not-allowed opacity-40' : ''}`}
       >
-        Ajouter au panier
+        {isAvailable ? 'Ajouter au panier' : 'En rupture'}
       </button>
-    </div>
+    </article>
   );
 };
 

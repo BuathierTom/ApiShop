@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import type { FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { IdCard, Rocket } from 'lucide-react';
+import { toast } from 'react-toastify';
 import api from '../api/axios';
 
 const RegisterPage = () => {
@@ -10,89 +13,156 @@ const RegisterPage = () => {
     firstName: '',
     lastName: '',
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (loading) return;
+    setLoading(true);
 
     try {
       await api.post('/auth/register', form);
+      toast.success('Votre compte ApiShop est prêt. Connectez-vous dès maintenant.');
       navigate('/login');
-    } catch (err) {
-      alert('Erreur lors de l’inscription');
-    }
-  };
+    } catch {
+      toast.error("Impossible de créer le compte pour l'instant. Réessayez plus tard.");
+    } finally {
+        setLoading(false);
+      }
+    };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen">
-        <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-          <img className="w-8 h-8 mr-2" src="/logo.svg" alt="logo" />
-          ApiShop
-        </a>
-        <div className="w-full bg-white rounded-lg shadow dark:border sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div className="p-6 space-y-4 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
-              Créer un compte
+    <div className="flex min-h-screen items-center justify-center px-4 py-12">
+      <div className="w-full max-w-4xl space-y-8 md:space-y-0 md:space-x-10 md:flex md:items-center md:justify-between">
+        <aside className="hidden h-full flex-1 flex-col justify-between rounded-2xl bg-white p-8 text-sm text-slate-600 shadow-xl shadow-slate-200/70 md:flex">
+          <div>
+            <p className="text-sm font-semibold text-brand">Rejoignez ApiShop</p>
+            <h1 className="mt-4 text-3xl font-semibold text-slate-900">
+              Lancez votre boutique avec un socle moderne.
             </h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <p className="mt-3 text-sm text-slate-600">
+              Créez un compte pour configurer votre catalogue, inviter des collaborateurs et suivre vos
+              commandes en temps réel.
+            </p>
+          </div>
+
+          <div className="mt-8 space-y-5">
+            <div className="flex items-start gap-3">
+              <IdCard className="mt-1 h-5 w-5 text-brand" />
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900">Prénom</label>
+                <h3 className="text-base font-semibold text-slate-900">Profil marchand clair</h3>
+                <p className="text-sm text-slate-600">
+                  Centralisez vos informations et gérez vos accès rapidement.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Rocket className="mt-1 h-5 w-5 text-brand" />
+              <div>
+                <h3 className="text-base font-semibold text-slate-900">Une base prête à évoluer</h3>
+                <p className="text-sm text-slate-600">
+                  Connectez vos intégrations ou personnalisez le front selon vos besoins.
+                </p>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <section className="glass-panel flex-1 p-8 text-slate-700">
+          <h2 className="text-2xl font-semibold text-slate-900">Créer un compte</h2>
+          <p className="mt-2 text-sm text-slate-600">
+            Renseignez vos informations pour activer votre espace ApiShop.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label htmlFor="firstName" className="text-sm font-medium text-slate-700">
+                  Prénom
+                </label>
                 <input
+                  id="firstName"
                   name="firstName"
                   type="text"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                  placeholder="Ada"
+                  value={form.firstName}
                   onChange={handleChange}
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-[color:var(--color-brand)] focus:outline-none focus:ring-1 focus:ring-[color:var(--color-accent-soft)]"
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900">Nom</label>
+                <label htmlFor="lastName" className="text-sm font-medium text-slate-700">
+                  Nom
+                </label>
                 <input
+                  id="lastName"
                   name="lastName"
                   type="text"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                  placeholder="Lovelace"
+                  value={form.lastName}
                   onChange={handleChange}
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-[color:var(--color-brand)] focus:outline-none focus:ring-1 focus:ring-[color:var(--color-accent-soft)]"
                 />
               </div>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900">Email</label>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900">Mot de passe</label>
-                <input
-                  name="password"
-                  type="password"
-                  required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                  onChange={handleChange}
-                />
-              </div>
-              <button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5">
-                Créer le compte
-              </button>
-              <p className="text-sm font-light text-gray-500">
-                Déjà inscrit ?{' '}
-                <Link to="/login" className="font-medium text-blue-600 hover:underline">
-                  Se connecter
-                </Link>
-              </p>
-            </form>
-          </div>
-        </div>
+            </div>
+
+            <div>
+              <label htmlFor="email" className="text-sm font-medium text-slate-700">
+                Email professionnel
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                placeholder="vous@apishop.io"
+                value={form.email}
+                onChange={handleChange}
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-[color:var(--color-brand)] focus:outline-none focus:ring-1 focus:ring-[color:var(--color-accent-soft)]"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="text-sm font-medium text-slate-700">
+                Mot de passe
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                placeholder="••••••••"
+                value={form.password}
+                onChange={handleChange}
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-[color:var(--color-brand)] focus:outline-none focus:ring-1 focus:ring-[color:var(--color-accent-soft)]"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`neon-button w-full justify-center ${loading ? 'cursor-not-allowed opacity-60' : ''}`}
+            >
+              {loading ? 'Création en cours...' : 'Créer le compte'}
+            </button>
+          </form>
+
+          <p className="mt-8 text-center text-xs text-slate-500">
+            Déjà inscrit ?{' '}
+            <Link to="/login" className="text-brand underline decoration-dotted underline-offset-4">
+              Se connecter
+            </Link>
+          </p>
+        </section>
       </div>
-    </section>
+    </div>
   );
 };
 

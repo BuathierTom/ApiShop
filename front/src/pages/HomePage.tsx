@@ -1,142 +1,221 @@
 import { Link } from 'react-router-dom';
+import { ArrowRight, Cpu, Layers, MessageSquare, Radar, ShieldCheck, ShoppingCart, Truck } from 'lucide-react';
 import Header from '../components/Header';
-import { ShieldCheck, Truck, ShoppingCart } from 'lucide-react';
+
+const highlights = [
+  {
+    title: 'Livraison maîtrisée',
+    description: 'Expédition garantie sous 24/48 h avec suivi clair pour vos clients.',
+    Icon: Truck,
+  },
+  {
+    title: 'Paiement sécurisé',
+    description: 'Intégration Stripe planifiée, SSO et chiffrement pour vos données.',
+    Icon: ShieldCheck,
+  },
+  {
+    title: 'Panier intelligent',
+    description: 'Sauvegarde automatique, rappels de disponibilité et commandes rapides.',
+    Icon: ShoppingCart,
+  },
+];
+
+const modules = [
+  {
+    title: 'Catalogue modulable',
+    description: 'Structure headless pour gérer produits, catégories et stocks depuis votre API .NET.',
+    Icon: Layers,
+  },
+  {
+    title: 'Pilotage en direct',
+    description: 'Suivez les performances, paniers et commandes dans un tableau de bord réactif.',
+    Icon: Radar,
+  },
+  {
+    title: 'Base moderne',
+    description: 'React 19, Vite et Tailwind 4 pour un front léger, maintenable et rapide.',
+    Icon: Cpu,
+  },
+];
 
 const HomePage = () => {
   return (
     <>
       <Header />
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-20">
+        <section className="glass-panel mt-10 px-6 py-12 md:px-10 md:py-14">
+          <div className="grid gap-12 md:grid-cols-[1.4fr,1fr] md:items-center">
+            <div>
+              <span className="chip text-brand">Une plateforme fiable</span>
+              <h1 className="mt-6 text-4xl font-semibold text-slate-900 md:text-5xl">
+                ApiShop, votre boutique en ligne prête à l’emploi
+              </h1>
+              <p className="mt-4 max-w-xl text-base text-slate-600 md:text-lg">
+                Nous combinons le meilleur de .NET et de React pour offrir une expérience fluide aux
+                équipes comme aux clients. Interface claire, parcours d’achat optimisé et outils de
+                pilotage intégrés.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <Link to="/products" className="neon-button">
+                  Découvrir le catalogue
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  to="/orders"
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-[color:var(--color-brand-soft)] hover:text-brand"
+                >
+                  Voir mes commandes
+                </Link>
+              </div>
+            </div>
 
-      {/* Hero */}
-      <section className="bg-gradient-to-r from-blue-100 to-blue-50 py-16 text-center px-4">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-          Bienvenue sur <span className="text-blue-600">ApiShop</span>
-        </h1>
-        <p className="text-lg text-gray-600 mb-8">
-          Votre boutique en ligne simple, rapide et sécurisée.
-        </p>
-        <Link
-          to="/products"
-          className="inline-block bg-blue-600 hover:bg-blue-700 text-white text-lg px-6 py-3 rounded-lg transition"
-        >
-          Voir les produits
-        </Link>
-      </section>
+            <aside className="flex flex-col gap-4 rounded-2xl bg-slate-50 p-6 text-sm text-slate-600 shadow-lg shadow-slate-200/70">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-400">Disponibilité</p>
+                <p className="mt-1 text-3xl font-semibold text-slate-900">99,9%</p>
+                <p className="text-xs text-slate-500">Monitoring continu & mises à jour automatisées</p>
+              </div>
+              <div className="border-t border-slate-200 pt-4">
+                <p className="text-xs uppercase tracking-wide text-slate-400">API unifiée</p>
+                <p className="mt-1 text-base font-semibold text-slate-900">Gestion produits & commandes</p>
+                <p className="text-xs text-slate-500">Endpoints documentés et prêts à intégrer</p>
+              </div>
+              <div className="border-t border-slate-200 pt-4">
+                <p className="text-xs uppercase tracking-wide text-slate-400">Support</p>
+                <p className="mt-1 text-base font-semibold text-slate-900">Equipe dev à l’écoute</p>
+                <p className="text-xs text-slate-500">Slack, email et retours produit rapides</p>
+              </div>
+            </aside>
+          </div>
+        </section>
 
-      {/* Avantages */}
-      <section className="py-12 bg-white">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-          <div>
-            <Truck className="mx-auto mb-2 text-blue-600" size={32} />
-            <h3 className="font-semibold text-lg">Livraison rapide</h3>
-            <p className="text-sm text-gray-500">Expédié sous 24/48h partout en France</p>
-          </div>
-          <div>
-            <ShieldCheck className="mx-auto mb-2 text-blue-600" size={32} />
-            <h3 className="font-semibold text-lg">Paiement sécurisé</h3>
-            <p className="text-sm text-gray-500">Cryptage SSL & support Stripe à venir</p>
-          </div>
-          <div>
-            <ShoppingCart className="mx-auto mb-2 text-blue-600" size={32} />
-            <h3 className="font-semibold text-lg">Panier intelligent</h3>
-            <p className="text-sm text-gray-500">Sauvegarde automatique et commandes rapides</p>
-          </div>
-        </div>
-      </section>
-      {/* Pourquoi ApiShop */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-gray-800 mb-10">Pourquoi choisir ApiShop ?</h2>
+        <section className="grid gap-6 md:grid-cols-3">
+          {highlights.map(({ title, description, Icon }) => (
+            <article key={title} className="glass-panel p-6">
+              <div className="mb-4 inline-flex rounded-full bg-brand-tint p-3 text-brand">
+                <Icon className="h-5 w-5" />
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">{description}</p>
+            </article>
+          ))}
+        </section>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-left">
-            <div className="bg-white rounded shadow p-6 hover:shadow-md transition">
-              <h3 className="text-xl font-semibold mb-2">Expérience fluide</h3>
-              <p className="text-gray-600 text-sm">
-                Grâce à une interface claire et rapide, achetez en toute simplicité depuis votre mobile ou PC.
+        <section className="glass-panel px-6 py-10 md:px-10">
+          <div className="md:flex md:items-start md:justify-between md:gap-12">
+            <div className="max-w-xl">
+              <span className="chip text-brand">Architecture ApiShop</span>
+              <h2 className="mt-4 text-3xl font-semibold text-slate-900 md:text-4xl">
+                Une base technique prête à faire grandir votre offre
+              </h2>
+              <p className="mt-4 text-sm text-slate-600 md:text-base">
+                ApiShop vous donne une structure claire pour orchestrer vos produits, suivre vos ventes
+                et offrir un parcours client sans friction. Exploitez notre front React ou branchez vos
+                propres interfaces grâce à l’API.
               </p>
             </div>
-
-            <div className="bg-white rounded shadow p-6 hover:shadow-md transition">
-              <h3 className="text-xl font-semibold mb-2">Performances optimisées</h3>
-              <p className="text-gray-600 text-sm">
-                ApiShop repose sur une API .NET performante et un front React moderne.
-              </p>
-            </div>
-
-            <div className="bg-white rounded shadow p-6 hover:shadow-md transition">
-              <h3 className="text-xl font-semibold mb-2">Support développeur</h3>
-              <p className="text-gray-600 text-sm">
-                Pensé par et pour les développeurs : transparent, simple à maintenir, prêt à évoluer.
-              </p>
+            <div className="mt-10 grid flex-1 gap-6 md:mt-0">
+              {modules.map(({ title, description, Icon }) => (
+                <div key={title} className="flex items-start gap-4 rounded-2xl bg-slate-50 p-5 text-sm text-slate-600 shadow-lg shadow-slate-200/70">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-tint text-brand">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-semibold text-slate-900">{title}</h3>
+                    <p className="mt-1 text-sm text-slate-600">{description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
-      {/* Contact */}
-      <section className="bg-white dark:bg-gray-900">
-        <div className="py-12 lg:py-16 px-4 mx-auto max-w-screen-md">
-          <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">
-            Contactez-nous
-          </h2>
-          <p className="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">
-            Une question ? Un bug ? Une idée ? Laissez-nous un message, nous vous répondrons rapidement.
-          </p>
+        </section>
 
-          <form
-            action="https://formspree.io/f/xldnybyw"
-            method="POST"
-            className="space-y-8"
-            autoComplete="off"
-          >
-            <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                Votre email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                placeholder="nom@exemple.com"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-              />
+        <section className="grid gap-8 md:grid-cols-[1.2fr,1fr]">
+          <div className="glass-panel p-8">
+            <h2 className="text-2xl font-semibold text-slate-900 md:text-3xl">Un parcours simple de bout en bout</h2>
+            <p className="mt-3 text-sm text-slate-600">
+              Chaque écran a été pensé pour guider vos clients : identification rapide, catalogue clair,
+              panier détaillé et suivi de commande accessible. Vous pouvez personnaliser le tout sans
+              repartir de zéro.
+            </p>
+            <ul className="mt-6 space-y-4 text-sm text-slate-600">
+              <li className="flex items-start gap-3">
+                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-brand-dot" />
+                Connexion et inscription rapides pour vos utilisateurs.
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-brand-dot" />
+                Fiches produits lisibles, prix clairs et stocks visibles.
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-brand-dot" />
+                Panier récapitulatif, ajustements immédiats et validation sereine.
+              </li>
+            </ul>
+          </div>
+
+          <div className="glass-panel p-8">
+            <div className="flex items-center gap-2 text-sm font-semibold text-brand">
+              <MessageSquare className="h-5 w-5" />
+              Contactez-nous
             </div>
-            <div>
-              <label htmlFor="subject" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                Sujet
-              </label>
-              <input
-                type="text"
-                id="subject"
-                name="subject"
-                required
-                placeholder="Parlez-nous de votre besoin"
-                className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-              />
-            </div>
-            <div>
-              <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
-                Votre message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={6}
-                required
-                placeholder="Laissez votre message ici..."
-                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-              />
-            </div>
-            <button
-              type="submit"
-              className="py-3 px-5 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            <h3 className="mt-4 text-xl font-semibold text-slate-900">Des questions sur ApiShop ?</h3>
+            <p className="mt-2 text-sm text-slate-600">
+              Laissez votre message et notre équipe vous répondra rapidement pour vous accompagner dans
+              vos intégrations ou vos idées d’évolution.
+            </p>
+            <form
+              action="https://formspree.io/f/xldnybyw"
+              method="POST"
+              autoComplete="off"
+              className="mt-6 space-y-4 text-sm"
             >
-              Envoyer le message
-            </button>
-          </form>
-        </div>
-      </section>
-
+              <div>
+                <label htmlFor="email" className="font-medium text-slate-700">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="vous@entreprise.com"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-[color:var(--color-brand)] focus:outline-none focus:ring-1 focus:ring-[color:var(--color-accent-soft)]"
+                />
+              </div>
+              <div>
+                <label htmlFor="subject" className="font-medium text-slate-700">
+                  Sujet
+                </label>
+                <input
+                  id="subject"
+                  name="subject"
+                  type="text"
+                  required
+                  placeholder="Parlez-nous de votre projet"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-[color:var(--color-brand)] focus:outline-none focus:ring-1 focus:ring-[color:var(--color-accent-soft)]"
+                />
+              </div>
+              <div>
+                <label htmlFor="message" className="font-medium text-slate-700">
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={4}
+                  required
+                  placeholder="Décrivez-nous vos besoins..."
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-[color:var(--color-brand)] focus:outline-none focus:ring-1 focus:ring-[color:var(--color-accent-soft)]"
+                />
+              </div>
+              <button type="submit" className="neon-button w-full justify-center">
+                Envoyer
+              </button>
+            </form>
+          </div>
+        </section>
+      </main>
     </>
   );
 };
